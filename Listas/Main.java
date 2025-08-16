@@ -2,195 +2,111 @@ package Listas;
 
 import java.util.Scanner;
 
+/**
+ * Programa principal de gestión de contactos con diferentes tipos de listas enlazadas
+ */
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        LinkedList list = null;
+        Scanner scanner = new Scanner(System.in); // Esto es para leer la entrada del usuario
+        LinkedList agenda = null; // Inicializa la agenda como null para luego asignarle un tipo de lista
         
-        while (true) {
-            printMainMenu();
-            int option = getIntInput(scanner, "Seleccione una opción: ");
-            
-            switch (option) {
-                case 1: list = createList(scanner); break;
-                case 2: insertElement(scanner, list); break;
-                case 3: deleteElement(scanner, list); break;
-                case 4: searchElement(scanner, list); break;
-                case 5: displayList(list); break;
-                case 6: showDataExamples(); break;
-                case 7: manageContacts(scanner); break;
-                case 8: exitProgram(scanner);
-                default: System.out.println("Opción no válida. Intente nuevamente.");
-            }
-        }
-    }
-    
-    private static void printMainMenu() {
-        System.out.println("\n=== MENÚ PRINCIPAL ===");
-        System.out.println("1. Crear nueva lista");
-        System.out.println("2. Insertar elemento");
-        System.out.println("3. Eliminar elemento");
-        System.out.println("4. Buscar elemento");
-        System.out.println("5. Mostrar lista");
-        System.out.println("6. Ejemplos de tipos de datos");
-        System.out.println("7. Gestión de contactos");
-        System.out.println("8. Salir");
-    }
-    
-    private static LinkedList createList(Scanner scanner) {
-        System.out.println("\n--- CREAR NUEVA LISTA ---");
-        System.out.println("1. Simplemente enlazada");
-        System.out.println("2. Doblemente enlazada");
-        System.out.println("3. Circular");
-        int type = getIntInput(scanner, "Seleccione tipo de lista: ");
+        // Menú para seleccionar tipo de lista
+        System.out.println("=== BIENVENIDO AL SISTEMA DE GESTIÓN DE CONTACTOS ===");
+        System.out.println("\nSeleccione el tipo de lista para su agenda:");
+        System.out.println("1. Lista simplemente enlazada");
+        System.out.println("2. Lista doblemente enlazada");
+        System.out.println("3. Lista circular");
+        System.out.print("Opción: ");
         
-        switch (type) {
-            case 1: return new LinkedList("SIMPLE");
-            case 2: return new LinkedList("DOUBLE");
-            case 3: return new LinkedList("CIRCULAR");
+        int tipoLista = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+        
+        // Crea la lista según la opción seleccionada
+        switch(tipoLista) {
+            case 1: agenda = new LinkedList("SIMPLE"); break;
+            case 2: agenda = new LinkedList("DOUBLE"); break;
+            case 3: agenda = new LinkedList("CIRCULAR"); break;
             default:
-                System.out.println("Opción no válida. Se creará lista simplemente enlazada.");
-                return new LinkedList("SIMPLE");
-        }
-    }
-    
-    private static void insertElement(Scanner scanner, LinkedList list) {
-        if (list == null) {
-            System.out.println("Primero debe crear una lista (Opción 1)");
-            return;
+                System.out.println("Opción inválida. Usando lista simplemente enlazada por defecto.");
+                agenda = new LinkedList("SIMPLE");
         }
         
-        System.out.print("\nIngrese el dato a insertar: ");
-        String data = scanner.nextLine();
-        list.insert(data);
-        System.out.println("Elemento insertado correctamente.");
-    }
-    
-    private static void deleteElement(Scanner scanner, LinkedList list) {
-        if (list == null) {
-            System.out.println("Primero debe crear una lista (Opción 1)");
-            return;
-        }
-        
-        System.out.print("\nIngrese el dato a eliminar: ");
-        String data = scanner.nextLine();
-        if (list.delete(data)) {
-            System.out.println("Elemento eliminado correctamente.");
-        } else {
-            System.out.println("Elemento no encontrado en la lista.");
-        }
-    }
-    
-    private static void searchElement(Scanner scanner, LinkedList list) {
-        if (list == null) {
-            System.out.println("Primero debe crear una lista (Opción 1)");
-            return;
-        }
-        
-        System.out.print("\nIngrese el dato a buscar: ");
-        String data = scanner.nextLine();
-        if (list.search(data)) {
-            System.out.println("Elemento encontrado en la lista.");
-        } else {
-            System.out.println("Elemento no encontrado en la lista.");
-        }
-    }
-    
-    private static void displayList(LinkedList list) {
-        if (list == null) {
-            System.out.println("Primero debe crear una lista (Opción 1)");
-            return;
-        }
-        list.display();
-    }
-    
-    private static void showDataExamples() {
-        DataTypeExamples.primitiveTypesExample();
-        DataTypeExamples.complexTypesExample();
-    }
-    
-    private static void manageContacts(Scanner scanner) {
-        LinkedList contactList = new LinkedList("SIMPLE");
-        
-        while (true) {
-            System.out.println("\n=== GESTIÓN DE CONTACTOS ===");
-            System.out.println("1. Agregar contacto");
+        // Menú principal de operaciones
+        while(true) {
+            System.out.println("\n=== MENÚ PRINCIPAL ===");
+            System.out.println("1. Agregar nuevo contacto");
             System.out.println("2. Eliminar contacto");
             System.out.println("3. Buscar contacto");
-            System.out.println("4. Mostrar contactos");
-            System.out.println("5. Volver al menú principal");
+            System.out.println("4. Mostrar todos los contactos");
+            System.out.println("5. Mostrar ejemplos de tipos de datos");
+            System.out.println("6. Salir");
+            System.out.print("Seleccione una opción: ");
             
-            int option = getIntInput(scanner, "Seleccione una opción: ");
+            int opcion = scanner.nextInt();
+            scanner.nextLine(); // Limpiar buffer
             
-            switch (option) {
-                case 1: addContact(scanner, contactList); break;
-                case 2: removeContact(scanner, contactList); break;
-                case 3: findContact(scanner, contactList); break;
-                case 4: contactList.display(); break;
-                case 5: return;
-                default: System.out.println("Opción no válida. Intente nuevamente.");
+            switch(opcion) {
+                case 1: // Agregar contacto
+                    System.out.println("\n--- NUEVO CONTACTO ---");
+                    System.out.print("Nombre: ");
+                    String nombre = scanner.nextLine();
+                    System.out.print("Teléfono: ");
+                    String telefono = scanner.nextLine();
+                    System.out.print("Dirección: ");
+                    String direccion = scanner.nextLine();
+                    
+                    Contact nuevo = new Contact(nombre, telefono, direccion);
+                    agenda.insert(nuevo);
+                    System.out.println("\nContacto agregado exitosamente!");
+                    break;
+                    
+                case 2: // Eliminar contacto
+                    System.out.println("\n--- ELIMINAR CONTACTO ---");
+                    System.out.print("Nombre del contacto a eliminar: ");
+                    String nombreEliminar = scanner.nextLine();
+                    System.out.print("Teléfono: ");
+                    String telEliminar = scanner.nextLine();
+                    
+                    Contact eliminar = new Contact(nombreEliminar, telEliminar, "");
+                    if(agenda.delete(eliminar)) {
+                        System.out.println("\nContacto eliminado exitosamente!");
+                    } else {
+                        System.out.println("\nContacto no encontrado en la agenda.");
+                    }
+                    break;
+                    
+                case 3: // Buscar contacto
+                    System.out.println("\n--- BUSCAR CONTACTO ---");
+                    System.out.print("Nombre del contacto a buscar: ");
+                    String nombreBuscar = scanner.nextLine();
+                    System.out.print("Teléfono: ");
+                    String telBuscar = scanner.nextLine();
+                    
+                    // Crar un contacto temporal para buscar
+                    Contact buscar = new Contact(nombreBuscar, telBuscar, "");
+                    if(agenda.search(buscar)) {
+                        System.out.println("\nEl contacto SÍ está en la agenda.");
+                    } else {
+                        System.out.println("\nEl contacto NO está en la agenda.");
+                    }
+                    break;
+                    
+                case 4: // Mostrar todos los contactos
+                    agenda.display();
+                    break;
+                    
+                case 5: // Mostrar ejemplos de tipos de datos
+                    DataTypeExamples.mostrarTodosEjemplos();
+                    break;
+                    
+                case 6: // Salir
+                    System.out.println("\nGracias por usar el sistema de gestión de contactos!");
+                    scanner.close(); // Cierra el scanner
+                    System.exit(0); // Sale del programa
+                    
+                default: // Opción inválida
+                    System.out.println("\nOpción inválida. Intente nuevamente.");
             }
         }
-    }
-    
-    private static void addContact(Scanner scanner, LinkedList list) {
-        System.out.println("\n--- AGREGAR CONTACTO ---");
-        System.out.print("Nombre: ");
-        String name = scanner.nextLine();
-        System.out.print("Dirección: ");
-        String address = scanner.nextLine();
-        System.out.print("Teléfono: ");
-        String phone = scanner.nextLine();
-        
-        Contacto newContact = DataTypeExamples.createContact(name, address, phone);
-        list.insert(newContact);
-        System.out.println("Contacto agregado correctamente.");
-    }
-    
-    private static void removeContact(Scanner scanner, LinkedList list) {
-        System.out.println("\n--- ELIMINAR CONTACTO ---");
-        System.out.print("Nombre del contacto: ");
-        String name = scanner.nextLine();
-        System.out.print("Teléfono del contacto: ");
-        String phone = scanner.nextLine();
-        
-        Contacto tempContact = new Contacto(name, "", phone);
-        if (list.delete(tempContact)) {
-            System.out.println("Contacto eliminado correctamente.");
-        } else {
-            System.out.println("Contacto no encontrado.");
-        }
-    }
-    
-    private static void findContact(Scanner scanner, LinkedList list) {
-        System.out.println("\n--- BUSCAR CONTACTO ---");
-        System.out.print("Nombre del contacto: ");
-        String name = scanner.nextLine();
-        System.out.print("Teléfono del contacto: ");
-        String phone = scanner.nextLine();
-        
-        Contacto tempContact = new Contacto(name, "", phone);
-        if (list.search(tempContact)) {
-            System.out.println("Contacto encontrado en la lista.");
-        } else {
-            System.out.println("Contacto no encontrado.");
-        }
-    }
-    
-    private static void exitProgram(Scanner scanner) {
-        System.out.println("\nSaliendo del programa...");
-        scanner.close();
-        System.exit(0);
-    }
-    
-    private static int getIntInput(Scanner scanner, String message) {
-        System.out.print(message);
-        while (!scanner.hasNextInt()) {
-            System.out.print("Entrada inválida. " + message);
-            scanner.next();
-        }
-        int input = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
-        return input;
     }
 }
