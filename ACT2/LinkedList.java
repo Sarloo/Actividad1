@@ -1,35 +1,29 @@
-package Listas;
+package ACT2;
 
 /**
- * Clase que implementa listas enlazadas para manejar contactos con operaciones CRUD
+ * Clase que implementa listas enlazadas para manejar objetos con operaciones CRUD
  * Soporta listas simplemente enlazadas, doblemente enlazadas y circulares.
  */
 public class LinkedList {
-    // Punter al inicio y fin de la lista
+    // Punteros al inicio y fin de la lista
     private Node head; // Primer nodo de la lista
     private Node tail; // Último nodo de la lista
     private String listType; // Tipos de lista: "SIMPLE", "DOUBLE", "CIRCULAR"
 
     // Constructor para inicializar la lista según el tipo especificado
-    // listType: Tipo de lista a crear ("SIMPLE", "DOUBLE", "CIRCULAR")
     public LinkedList(String listType) {
         this.head = null;
         this.tail = null;
         this.listType = listType;
     }
 
-    // Insertar un nuevo contacto en la lista
-    // contact: Objeto Contacto a insertar
-    // Dependiendo del tipo de lista, se maneja la inserción de manera diferente
-    // En listas simplemente enlazadas, se agrega al final
-    // En listas dobles, se mantiene la referencia al nodo anterior
-    // En listas circulares, se conecta el último nodo al primero
-    public void insert(Contact contact) {
+    // Insertar un nuevo objeto en la lista
+    public void insert(Object data) {
         Node newNode; // Nuevo nodo a insertar
         
         switch(listType) {
             case "SIMPLE": // Lista simplemente enlazada
-                newNode = new Node(contact); // Crea nodo simple
+                newNode = new Node(data); // Crea nodo simple
                 if (head == null) { // Si la lista está vacía
                     head = newNode; // Head y tail apuntan al nuevo nodo
                     tail = newNode;
@@ -41,7 +35,7 @@ public class LinkedList {
                 
             case "DOUBLE": // Lista doblemente enlazada
                 // Crea un nuevo nodo con referencia al nodo anterior (tail)
-                newNode = new Node(contact, tail);
+                newNode = new Node(data, tail);
                 if (head == null) { // Si la lista está vacía
                     head = newNode;
                     tail = newNode;
@@ -52,7 +46,7 @@ public class LinkedList {
                 break;
                 
             case "CIRCULAR": // Lista circular
-                newNode = new Node(contact); // Crea nodo circular
+                newNode = new Node(data); // Crea nodo circular
                 if (head == null) { // Si la lista está vacía
                     head = newNode;
                     head.next = head; // Se apunta a sí mismo
@@ -66,15 +60,13 @@ public class LinkedList {
         }
     }
 
-    // Eliminar un contacto
-    // contact: Objeto Contacto a eliminar
-    // Retorna true si se eliminó el contacto, false si no se encontró
-    public boolean delete(Contact contact) {
+    // Eliminar un objeto
+    public boolean delete(Object data) {
         if (head == null) return false; // Lista vacía
 
         switch(listType) {
             case "SIMPLE": // Lista simple
-                if (((Contact)head.data).equals(contact)) { // Si es el primer nodo
+                if (head.data.equals(data)) { // Si es el primer nodo
                     head = head.next; // Mueve head al siguiente
                     if (head == null) tail = null; // Si la lista queda vacía, tail también es null
                     return true;
@@ -82,21 +74,21 @@ public class LinkedList {
                 
                 Node current = head;
                 // Busca el nodo anterior al que se quiere eliminar
-                while (current.next != null && !((Contact)current.next.data).equals(contact)) {
+                while (current.next != null && !current.next.data.equals(data)) {
                     current = current.next;
                 }
                 
-                if (current.next != null) { // Si se encontró el contacto
+                if (current.next != null) { // Si se encontró el objeto
                     if (current.next == tail) { // Si es el último nodo
                         tail = current; // Actualiza tail
                     }
-                    current.next = current.next.next; // Elimina el contacto
+                    current.next = current.next.next; // Elimina el objeto
                     return true;
                 }
                 break;
                 
             case "DOUBLE": // Lista doble
-                if (((Contact)head.data).equals(contact)) { // Si es el primer nodo
+                if (head.data.equals(data)) { // Si es el primer nodo
                     head = head.next;
                     if (head != null) {
                         head.prev = null; // Elimina referencia al nodo anterior
@@ -107,12 +99,12 @@ public class LinkedList {
                 }
                 
                 current = head;
-                // Busca el nodo que contiene el contacto
-                while (current != null && !((Contact)current.data).equals(contact)) {
+                // Busca el nodo que contiene el objeto
+                while (current != null && !current.data.equals(data)) {
                     current = current.next;
                 }
                 
-                if (current != null) { // Si se encontró el contacto
+                if (current != null) { // Si se encontró el objeto
                     if (current.prev != null) {
                         current.prev.next = current.next; // Actualiza el nodo anterior
                     }
@@ -127,7 +119,7 @@ public class LinkedList {
                 break;
                 
             case "CIRCULAR": // Lista circular
-                if (((Contact)head.data).equals(contact)) { // Si es el primer nodo
+                if (head.data.equals(data)) { // Si es el primer nodo
                     if (head.next == head) { // Si solo hay un nodo
                         head = null;
                         tail = null;
@@ -140,10 +132,10 @@ public class LinkedList {
                 
                 Node prev = tail;
                 current = head;
-                // Recorre la lista circular buscando el contacto 
+                // Recorre la lista circular buscando el objeto 
                 do {
-                    if (((Contact)current.data).equals(contact)) { // Si se encuentra el contacto
-                        prev.next = current.next; // Elimina el contacto
+                    if (current.data.equals(data)) { // Si se encuentra el objeto
+                        prev.next = current.next; // Elimina el objeto
                         if (current == tail) { // Si es el último nodo
                             tail = prev; // Actualiza tail
                         }
@@ -154,46 +146,60 @@ public class LinkedList {
                 } while (current != head); // Hasta volver al inicio
                 break;
         }
-        return false; // No se encontró el contacto
+        return false; // No se encontró el objeto
     }
 
-    // Buscar un contacto en la lista
-    // contact: Objeto Contacto a buscar
-    // Retorna true si se encuentra, false en caso contrario
-    public boolean search(Contact contact) {
+    // Buscar un objeto en la lista
+    public boolean search(Object data) {
         if (head == null) return false; // Lista vacía
 
         Node current = head;
-        // Recorre la lista buscando el contacto
+        // Recorre la lista buscando el objeto
         do {
-            if (((Contact)current.data).equals(contact)) { // Si se encuentra el contacto
+            if (current.data.equals(data)) { // Si se encuentra el objeto
                 return true;
             }
             current = current.next;
         } while (current != null && current != head); // Para listas lineales y circulares 
 
-        return false; // No se encontró el contacto
+        return false; // No se encontró el objeto
     }
 
-    // Mostrar todos los contactos de la lista
-    // Imprime los contactos en la consola
+    // Mostrar todos los objetos de la lista
     public void display() {
         if (head == null) { // Si la lista está vacía
-            System.out.println("\nLa agenda de contactos está vacía");
+            System.out.println("\nLa lista está vacía");
             return;
         }
-            // Encabezado de la lista
-        System.out.println("\n=== LISTA DE CONTACTOS ===");
+        
+        System.out.println("\n=== LISTA ===");
         System.out.println("Tipo de lista: " + listType);
         System.out.println("--------------------------");
         
         Node current = head;
-        // Recorre la lista mostrando cada contacto
+        // Recorre la lista mostrando cada objeto
         do {
-            System.out.println(current.data); // Usando toString() de Contact
+            System.out.println(current.data.toString());
             current = current.next;
         } while (current != null && current != head); // Para todos los tipos de lista
         
         System.out.println("--------------------------");
+    }
+
+    // Obtener el primer elemento de la lista
+    public Object getPrimero() {
+        if (head == null) return null;
+        return head.data;
+    }
+
+    // Obtener el último elemento de la lista
+    public Object getUltimo() {
+        if (tail == null) return null;
+        return tail.data;
+    }
+
+    // Verificar si la lista está vacía
+    public boolean isEmpty() {
+        return head == null;
     }
 }

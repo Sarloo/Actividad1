@@ -1,11 +1,11 @@
-package Listas;
+package ACT2;
 
 /**
  * Clase que representa un nodo para listas enlazadas
- * Cada nodo almacena un dato (en este caso, un Contacto)
+ * Cada nodo almacena un dato (en este caso, un String)
  */
 public class Node {
-    Object data;    // Dato almacenado en el nodo (en este caso será un Contacto)
+    Object data;    // Dato almacenado en el nodo (en este caso será un String)
     Node next;      // Referencia al siguiente nodo
     Node prev;      // Referencia al nodo anterior (para listas dobles)
 
